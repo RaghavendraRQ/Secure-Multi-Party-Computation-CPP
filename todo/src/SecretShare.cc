@@ -38,6 +38,13 @@ std::vector<int> AdditiveSecretShare::getShares() {
     return shares;
 }
 
+void AdditiveSecretShare::printShares() const {
+    if (not shares.empty())
+        for (const auto& share: shares)
+            std::cout << share << " ";
+    std::cout << "\n";
+}
+
 int AdditiveSecretShare::computeShares() {
     int sum = 0;
     for (const auto share: shares)

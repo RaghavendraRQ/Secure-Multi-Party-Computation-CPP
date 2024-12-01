@@ -68172,6 +68172,8 @@ public:
 
     std::vector<int> getShares();
 
+    void printShares() const;
+
     int computeShares();
 };
 # 6 "/home/raghavendra/Myworkspace/CPP/todo/todo/src/SecretShare.cc" 2
@@ -68208,6 +68210,13 @@ std::vector<int> AdditiveSecretShare::getShares() {
         shares.emplace_back(last_share);
     }
     return shares;
+}
+
+void AdditiveSecretShare::printShares() const {
+    if (not shares.empty())
+        for (const auto& share: shares)
+            std::cout << share << " ";
+    std::cout << "\n";
 }
 
 int AdditiveSecretShare::computeShares() {

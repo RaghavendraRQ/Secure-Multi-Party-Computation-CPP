@@ -25,6 +25,8 @@ public:
 
     std::vector<int> getShares();
 
+    void printShares() const;
+
     int computeShares();
 };
 
