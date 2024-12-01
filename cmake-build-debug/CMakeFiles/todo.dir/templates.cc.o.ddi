@@ -1,0 +1,11 @@
+{
+"rules": [
+{
+"primary-output": "CMakeFiles/todo.dir/templates.cc.o",
+"requires": [
+]
+}
+],
+"version": 0,
+"revision": 0
+}

@@ -1,0 +1,21 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "GNU",
+	"compiler-id" : "GNU",
+	"compiler-simulate-id" : "",
+	"config" : "Debug",
+	"cxx-modules" : {},
+	"dir-cur-bld" : "/home/raghavendra/Myworkspace/CPP/todo/cmake-build-debug",
+	"dir-cur-src" : "/home/raghavendra/Myworkspace/CPP/todo",
+	"dir-top-bld" : "/home/raghavendra/Myworkspace/CPP/todo/cmake-build-debug",
+	"dir-top-src" : "/home/raghavendra/Myworkspace/CPP/todo",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : 
+	[
+		"/home/raghavendra/Myworkspace/CPP/todo/include"
+	],
+	"language" : "CXX",
+	"linked-target-dirs" : [],
+	"module-dir" : "/home/raghavendra/Myworkspace/CPP/todo/cmake-build-debug/CMakeFiles/todo.dir"
+}

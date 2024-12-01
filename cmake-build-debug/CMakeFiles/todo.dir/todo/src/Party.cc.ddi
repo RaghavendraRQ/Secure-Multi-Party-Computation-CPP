@@ -1,0 +1,11 @@
+{
+"rules": [
+{
+"primary-output": "CMakeFiles/todo.dir/todo/src/Party.cc.o",
+"requires": [
+]
+}
+],
+"version": 0,
+"revision": 0
+}
