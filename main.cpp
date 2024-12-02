@@ -4,6 +4,7 @@
 #include "todo/include/SecretShare.h"
 #include "todo/include/Party.h"
 #include "todo/include/utils/constants.h"
+#include "todo/include/utils/ShareUtils.h"
 
 
 void printIt(const std::unique_ptr<TaskManager> &task_manager) {
@@ -31,8 +32,8 @@ void printIt(const std::unique_ptr<TaskManager> &task_manager) {
 int main() {
     int value_count;
     std::cout << "*************** Offline Phase ***************" << std::endl;
-    std::cout << "Modulus value: " << MODULUS << std::endl;
-    std::cout << "Share Count: " << SHARE_COUNT << std::endl;
+    std::cout << "Modulus value: " << CONSTANTS::MODULUS << std::endl;
+    std::cout << "Share Count: " << CONSTANTS::SHARE_COUNT << std::endl;
     std::cout << "Enter a No.of Values: ";
     std::cin >> value_count;
     std::vector<int> values(value_count);
@@ -41,42 +42,44 @@ int main() {
         std::cout << "Enter the value of " << (i+1) << "th value: ", std::cin >> values[i];
 
     std::vector<std::shared_ptr<AdditiveSecretShare>> secretShares;
-    secretShares.reserve(SHARE_COUNT);
-    for (size_t i = 0; i < SHARE_COUNT; i ++)
-        secretShares.emplace_back(std::make_shared<AdditiveSecretShare>(values[i], MODULUS));
+    secretShares.reserve(value_count);
 
-    std::vector<std::vector<int>> shares(SHARE_COUNT);
-    for (size_t i = 0; i < SHARE_COUNT; i ++)
-        shares.emplace_back(secretShares[i]->getShares());
+    for (size_t i = 0; i < value_count; i ++)
+        secretShares.emplace_back(std::make_shared<AdditiveSecretShare>(values[i], CONSTANTS::MODULUS, value_count));
 
-    for (const auto& share: secretShares)
-        share->printShares();
-    //
-    // std::cout << shares[0] << " " << shares[1] << " " << shares[2] << std::endl;
-    // std::cout << shares2[0] << " " << shares2[1] << " " << shares2[2] << std::endl;
-    //
-    // std::vector first_party_shares = {shares[0], shares2[0]};
-    // std::vector second_party_shares = {shares[1], shares2[1]};
-    // std::vector third_party_shares = {shares[2], shares2[2]};
-    //
-    // std::cout << "****************** Online Phase *******************" << std::endl;
-    // std::cout << "Distributing the shares to three parties..." << std::endl;
-    // SMPCAdditionParty *const party1 = new SMPCAdditionParty(first_party_shares, MODULUS);
-    // SMPCAdditionParty *const party2 = new SMPCAdditionParty(second_party_shares, MODULUS);
-    // SMPCAdditionParty *const party3 = new SMPCAdditionParty(third_party_shares, MODULUS);
-    //
-    // std::cout << "Computing the partial sum..." << std::endl;
-    //
-    // std::cout << "Party 1: " << party1->computePartialSum() << std::endl;
-    // std::cout << "Party 2: " << party2->computePartialSum() << std::endl;
-    // std::cout << "Party 3: " << party3->computePartialSum() << std::endl;
-    //
-    // std::cout << "The final sum is: " << (party1->partial_sum + party2->partial_sum + party3->partial_sum) % MODULUS <<
-    //         std::endl;
-    //
-    // delete party1;
-    // delete party2;
-    // delete party3;
+    std::vector<std::vector<int>> shares(value_count);
+
+    for (size_t i = 0; i < value_count; ++i) {
+        shares[i] = secretShares[i]->getShares(value_count);
+    }
+
+    std::cout << "\nPrinting shares of each party....\n" << std::endl;
+    RQ_SMPC_Utils::printShareMatrix(shares);
+    matrix share_distributed = RQ_SMPC_Utils::getTranspose(shares);
+    std::cout << "\nPrinting shares of to be distributed ....\n" << std::endl;
+    RQ_SMPC_Utils::printShareMatrix(share_distributed);
+
+
+    std::cout << "****************** Online Phase *******************" << std::endl;
+    std::cout << "Distributing the shares to three parties..." << std::endl;
+    std::vector<SMPCAdditionParty*> parties(value_count);
+    for (int i = 0; i < value_count; ++i) {
+        parties[i] = new SMPCAdditionParty(share_distributed[i], CONSTANTS::MODULUS);
+    }
+    std::cout << "\nComputing the partial sum...\n" << std::endl;
+
+    for (const auto& smpc_party: parties)
+        std::cout << smpc_party->computePartialSum() << std::endl;
+
+    std::cout << "\nTotal Sum....\n" << std::endl;
+    int total_sum = 0;
+    for (const auto& smpc_party: parties)
+        total_sum += smpc_party->computePartialSum();
+    std::cout << total_sum % CONSTANTS::MODULUS << std::endl;
+
+    for (const auto& smpc_party: parties)
+        delete smpc_party;
+    parties.clear();
 
     return 0;
 }

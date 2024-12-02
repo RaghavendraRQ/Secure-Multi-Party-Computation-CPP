@@ -88400,10 +88400,31 @@ namespace __detail
 }
 # 51 "/usr/include/c++/14.2.0/random" 2 3
 # 12 "/home/raghavendra/Myworkspace/CPP/todo/todo/include/SecretShare.h" 2
+# 1 "/home/raghavendra/Myworkspace/CPP/todo/todo/include/utils/constants.h" 1
 
 
 
-# 14 "/home/raghavendra/Myworkspace/CPP/todo/todo/include/SecretShare.h"
+
+
+
+
+
+# 8 "/home/raghavendra/Myworkspace/CPP/todo/todo/include/utils/constants.h"
+namespace CONSTANTS {
+    namespace SMPCConstants {
+        constexpr unsigned MODULUS = 65537;
+        constexpr unsigned SHARE_COUNT = 3;
+    }
+
+    namespace TestConstants {
+        constexpr unsigned MODULUS = 1048576;
+        constexpr unsigned SHARE_COUNT = 5;
+    }
+
+    using namespace SMPCConstants;
+}
+# 13 "/home/raghavendra/Myworkspace/CPP/todo/todo/include/SecretShare.h" 2
+
 class AdditiveSecretShare {
 public:
     std::vector<int> shares;
@@ -88412,11 +88433,11 @@ public:
 
     AdditiveSecretShare(int value, int modulus, std::vector<int> &shares);
 
-    AdditiveSecretShare(int value, int modulus);
+    AdditiveSecretShare(int value, int modulus, int num_share);
 
     ~AdditiveSecretShare();
 
-    std::vector<int> getShares();
+    std::vector<int> getShares(const int& num_shares);
 
     void printShares() const;
 
@@ -88435,42 +88456,34 @@ public:
 
 class SMPCAdditionParty: public Party {
 public:
-    unsigned int partial_sum{0};
+    int partial_sum{0};
     SMPCAdditionParty(std::vector<int>& client_shares, int modulus);
     int computePartialSum();
 };
 # 6 "/home/raghavendra/Myworkspace/CPP/todo/main.cpp" 2
 # 1 "/home/raghavendra/Myworkspace/CPP/todo/todo/include/utils/constants.h" 1
-
-
-
-
-
-
-
-namespace SMPCConstants {
-    constexpr unsigned MODULUS = 65537;
-    constexpr unsigned SHARE_COUNT = 3;
-}
-
-namespace TestConstants {
-    constexpr unsigned MODULUS = 1048576;
-    constexpr unsigned SHARE_COUNT = 5;
-}
-
-using namespace SMPCConstants;
 # 7 "/home/raghavendra/Myworkspace/CPP/todo/main.cpp" 2
+# 1 "/home/raghavendra/Myworkspace/CPP/todo/todo/include/utils/ShareUtils.h" 1
+# 10 "/home/raghavendra/Myworkspace/CPP/todo/todo/include/utils/ShareUtils.h"
+typedef std::vector<std::vector<int>> matrix;
+
+namespace RQ_SMPC_Utils {
+    matrix getTranspose(const matrix &mat);
+    void printShareMatrix(const matrix &mat);
+
+}
+# 8 "/home/raghavendra/Myworkspace/CPP/todo/main.cpp" 2
 
 
 void printIt(const std::unique_ptr<TaskManager> &task_manager) {
     task_manager->printAllTasks();
 }
-# 31 "/home/raghavendra/Myworkspace/CPP/todo/main.cpp"
+# 32 "/home/raghavendra/Myworkspace/CPP/todo/main.cpp"
 int main() {
     int value_count;
     std::cout << "*************** Offline Phase ***************" << std::endl;
-    std::cout << "Modulus value: " << MODULUS << std::endl;
-    std::cout << "Share Count: " << SHARE_COUNT << std::endl;
+    std::cout << "Modulus value: " << CONSTANTS::MODULUS << std::endl;
+    std::cout << "Share Count: " << CONSTANTS::SHARE_COUNT << std::endl;
     std::cout << "Enter a No.of Values: ";
     std::cin >> value_count;
     std::vector<int> values(value_count);
@@ -88479,16 +88492,44 @@ int main() {
         std::cout << "Enter the value of " << (i+1) << "th value: ", std::cin >> values[i];
 
     std::vector<std::shared_ptr<AdditiveSecretShare>> secretShares;
-    secretShares.reserve(SHARE_COUNT);
-    for (size_t i = 0; i < SHARE_COUNT; i ++)
-        secretShares.emplace_back(std::make_shared<AdditiveSecretShare>(values[i], MODULUS));
+    secretShares.reserve(value_count);
 
-    std::vector<std::vector<int>> shares(SHARE_COUNT);
-    for (size_t i = 0; i < SHARE_COUNT; i ++)
-        shares.emplace_back(secretShares[i]->getShares());
+    for (size_t i = 0; i < value_count; i ++)
+        secretShares.emplace_back(std::make_shared<AdditiveSecretShare>(values[i], CONSTANTS::MODULUS, value_count));
 
-    for (const auto& share: secretShares)
-        share->printShares();
-# 81 "/home/raghavendra/Myworkspace/CPP/todo/main.cpp"
+    std::vector<std::vector<int>> shares(value_count);
+
+    for (size_t i = 0; i < value_count; ++i) {
+        shares[i] = secretShares[i]->getShares(value_count);
+    }
+
+    std::cout << "\nPrinting shares of each party....\n" << std::endl;
+    RQ_SMPC_Utils::printShareMatrix(shares);
+    matrix share_distributed = RQ_SMPC_Utils::getTranspose(shares);
+    std::cout << "\nPrinting shares of to be distributed ....\n" << std::endl;
+    RQ_SMPC_Utils::printShareMatrix(share_distributed);
+
+
+    std::cout << "****************** Online Phase *******************" << std::endl;
+    std::cout << "Distributing the shares to three parties..." << std::endl;
+    std::vector<SMPCAdditionParty*> parties(value_count);
+    for (int i = 0; i < value_count; ++i) {
+        parties[i] = new SMPCAdditionParty(share_distributed[i], CONSTANTS::MODULUS);
+    }
+    std::cout << "\nComputing the partial sum...\n" << std::endl;
+
+    for (const auto& smpc_party: parties)
+        std::cout << smpc_party->computePartialSum() << std::endl;
+
+    std::cout << "\nTotal Sum....\n" << std::endl;
+    int total_sum = 0;
+    for (const auto& smpc_party: parties)
+        total_sum += smpc_party->computePartialSum();
+    std::cout << total_sum % CONSTANTS::MODULUS << std::endl;
+
+    for (const auto& smpc_party: parties)
+        delete smpc_party;
+    parties.clear();
+
     return 0;
 }

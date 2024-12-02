@@ -134,7 +134,24 @@ build CMakeFiles/todo.dir/todo/src/Party.cc.o: CXX_COMPILER__todo_scanned_Debug 
   OBJECT_FILE_DIR = CMakeFiles/todo.dir/todo/src
   dyndep = CMakeFiles/todo.dir/CXX.dd
 
-build CMakeFiles/todo.dir/CXX.dd | /home/raghavendra/Myworkspace/CPP/todo/cmake-build-debug/CMakeFiles/todo.dir/CXXModules.json CMakeFiles/todo.dir/main.cpp.o.modmap CMakeFiles/todo.dir/todo/src/Task.cc.o.modmap CMakeFiles/todo.dir/todo/src/TaskManager.cc.o.modmap CMakeFiles/todo.dir/todo/src/SecretShare.cc.o.modmap CMakeFiles/todo.dir/todo/src/Party.cc.o.modmap: CXX_DYNDEP__todo_Debug CMakeFiles/todo.dir/main.cpp.o.ddi CMakeFiles/todo.dir/todo/src/Task.cc.o.ddi CMakeFiles/todo.dir/todo/src/TaskManager.cc.o.ddi CMakeFiles/todo.dir/todo/src/SecretShare.cc.o.ddi CMakeFiles/todo.dir/todo/src/Party.cc.o.ddi | /home/raghavendra/Myworkspace/CPP/todo/cmake-build-debug/CMakeFiles/todo.dir/CXXDependInfo.json
+build CMakeFiles/todo.dir/todo/src/utils/ShareUtils.cc.o.ddi: CXX_SCAN__todo_Debug /home/raghavendra/Myworkspace/CPP/todo/todo/src/utils/ShareUtils.cc || cmake_object_order_depends_target_todo
+  DEP_FILE = CMakeFiles/todo.dir/todo/src/utils/ShareUtils.cc.o.ddi.d
+  DYNDEP_INTERMEDIATE_FILE = CMakeFiles/todo.dir/todo/src/utils/ShareUtils.cc.o.ddi
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/raghavendra/Myworkspace/CPP/todo/include
+  OBJ_FILE = CMakeFiles/todo.dir/todo/src/utils/ShareUtils.cc.o
+  PREPROCESSED_OUTPUT_FILE = CMakeFiles/todo.dir/todo/src/utils/ShareUtils.cc.o.ddi.i
+
+build CMakeFiles/todo.dir/todo/src/utils/ShareUtils.cc.o: CXX_COMPILER__todo_scanned_Debug /home/raghavendra/Myworkspace/CPP/todo/todo/src/utils/ShareUtils.cc | CMakeFiles/todo.dir/todo/src/utils/ShareUtils.cc.o.modmap || cmake_object_order_depends_target_todo CMakeFiles/todo.dir/CXX.dd
+  DEP_FILE = CMakeFiles/todo.dir/todo/src/utils/ShareUtils.cc.o.d
+  DYNDEP_MODULE_MAP_FILE = CMakeFiles/todo.dir/todo/src/utils/ShareUtils.cc.o.modmap
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  INCLUDES = -I/home/raghavendra/Myworkspace/CPP/todo/include
+  OBJECT_DIR = CMakeFiles/todo.dir
+  OBJECT_FILE_DIR = CMakeFiles/todo.dir/todo/src/utils
+  dyndep = CMakeFiles/todo.dir/CXX.dd
+
+build CMakeFiles/todo.dir/CXX.dd | /home/raghavendra/Myworkspace/CPP/todo/cmake-build-debug/CMakeFiles/todo.dir/CXXModules.json CMakeFiles/todo.dir/main.cpp.o.modmap CMakeFiles/todo.dir/todo/src/Task.cc.o.modmap CMakeFiles/todo.dir/todo/src/TaskManager.cc.o.modmap CMakeFiles/todo.dir/todo/src/SecretShare.cc.o.modmap CMakeFiles/todo.dir/todo/src/Party.cc.o.modmap CMakeFiles/todo.dir/todo/src/utils/ShareUtils.cc.o.modmap: CXX_DYNDEP__todo_Debug CMakeFiles/todo.dir/main.cpp.o.ddi CMakeFiles/todo.dir/todo/src/Task.cc.o.ddi CMakeFiles/todo.dir/todo/src/TaskManager.cc.o.ddi CMakeFiles/todo.dir/todo/src/SecretShare.cc.o.ddi CMakeFiles/todo.dir/todo/src/Party.cc.o.ddi CMakeFiles/todo.dir/todo/src/utils/ShareUtils.cc.o.ddi | /home/raghavendra/Myworkspace/CPP/todo/cmake-build-debug/CMakeFiles/todo.dir/CXXDependInfo.json
 
 
 # =============================================================================
@@ -144,7 +161,7 @@ build CMakeFiles/todo.dir/CXX.dd | /home/raghavendra/Myworkspace/CPP/todo/cmake-
 #############################################
 # Link the executable todo
 
-build todo: CXX_EXECUTABLE_LINKER__todo_Debug CMakeFiles/todo.dir/main.cpp.o CMakeFiles/todo.dir/todo/src/Task.cc.o CMakeFiles/todo.dir/todo/src/TaskManager.cc.o CMakeFiles/todo.dir/todo/src/SecretShare.cc.o CMakeFiles/todo.dir/todo/src/Party.cc.o
+build todo: CXX_EXECUTABLE_LINKER__todo_Debug CMakeFiles/todo.dir/main.cpp.o CMakeFiles/todo.dir/todo/src/Task.cc.o CMakeFiles/todo.dir/todo/src/TaskManager.cc.o CMakeFiles/todo.dir/todo/src/SecretShare.cc.o CMakeFiles/todo.dir/todo/src/Party.cc.o CMakeFiles/todo.dir/todo/src/utils/ShareUtils.cc.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/todo.dir
   POST_BUILD = :

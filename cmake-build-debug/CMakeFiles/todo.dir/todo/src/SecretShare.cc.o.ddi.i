@@ -68154,10 +68154,31 @@ namespace __detail
 }
 # 51 "/usr/include/c++/14.2.0/random" 2 3
 # 12 "/home/raghavendra/Myworkspace/CPP/todo/todo/src/../include/SecretShare.h" 2
+# 1 "/home/raghavendra/Myworkspace/CPP/todo/todo/src/../include/utils/constants.h" 1
 
 
 
-# 14 "/home/raghavendra/Myworkspace/CPP/todo/todo/src/../include/SecretShare.h"
+
+
+
+
+
+# 8 "/home/raghavendra/Myworkspace/CPP/todo/todo/src/../include/utils/constants.h"
+namespace CONSTANTS {
+    namespace SMPCConstants {
+        constexpr unsigned MODULUS = 65537;
+        constexpr unsigned SHARE_COUNT = 3;
+    }
+
+    namespace TestConstants {
+        constexpr unsigned MODULUS = 1048576;
+        constexpr unsigned SHARE_COUNT = 5;
+    }
+
+    using namespace SMPCConstants;
+}
+# 13 "/home/raghavendra/Myworkspace/CPP/todo/todo/src/../include/SecretShare.h" 2
+
 class AdditiveSecretShare {
 public:
     std::vector<int> shares;
@@ -68166,11 +68187,11 @@ public:
 
     AdditiveSecretShare(int value, int modulus, std::vector<int> &shares);
 
-    AdditiveSecretShare(int value, int modulus);
+    AdditiveSecretShare(int value, int modulus, int num_share);
 
     ~AdditiveSecretShare();
 
-    std::vector<int> getShares();
+    std::vector<int> getShares(const int& num_shares);
 
     void printShares() const;
 
@@ -68185,10 +68206,10 @@ AdditiveSecretShare::AdditiveSecretShare(const int value, const int modulus,
                                                                     modulus(modulus) {
 }
 
-AdditiveSecretShare::AdditiveSecretShare(const int value, const int modulus)
+AdditiveSecretShare::AdditiveSecretShare(const int value, const int modulus, const int num_share)
     : value(value),
       modulus(modulus) {
-    shares = getShares();
+    shares = getShares(num_share);
 }
 
 AdditiveSecretShare::~AdditiveSecretShare() {
@@ -68197,17 +68218,19 @@ AdditiveSecretShare::~AdditiveSecretShare() {
 }
 
 
-std::vector<int> AdditiveSecretShare::getShares() {
+std::vector<int> AdditiveSecretShare::getShares(const int& num_shares) {
     if (shares.empty()) {
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> dis(0, modulus);
-        int first_share = dis(gen);
-        int second_share = dis(gen);
-        unsigned last_share = (value - first_share - second_share) % modulus;
-        shares.emplace_back(first_share);
-        shares.emplace_back(second_share);
-        shares.emplace_back(last_share);
+        shares.reserve(num_shares);
+        for (size_t i = 1; i < num_shares; ++i)
+            shares.emplace_back(dis(gen));
+        int random_share_sum = 0;
+        for (const auto& share: shares)
+            random_share_sum += share;
+        int remainder = (value - random_share_sum) % modulus;
+        shares.emplace_back(remainder);
     }
     return shares;
 }

@@ -9,3 +9,5 @@ build CMakeFiles/todo.dir/todo/src/SecretShare.cc.o: dyndep
 
 build CMakeFiles/todo.dir/todo/src/Party.cc.o: dyndep
 
+build CMakeFiles/todo.dir/todo/src/utils/ShareUtils.cc.o: dyndep
+

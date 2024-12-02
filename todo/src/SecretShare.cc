@@ -11,10 +11,10 @@ AdditiveSecretShare::AdditiveSecretShare(const int value, const int modulus,
                                                                     modulus(modulus) {
 }
 
-AdditiveSecretShare::AdditiveSecretShare(const int value, const int modulus)
+AdditiveSecretShare::AdditiveSecretShare(const int value, const int modulus, const int num_share)
     : value(value),
       modulus(modulus) {
-    shares = getShares();
+    shares = getShares(num_share);
 }
 
 AdditiveSecretShare::~AdditiveSecretShare() {
@@ -23,17 +23,19 @@ AdditiveSecretShare::~AdditiveSecretShare() {
 }
 
 
-std::vector<int> AdditiveSecretShare::getShares() {
+std::vector<int> AdditiveSecretShare::getShares(const int& num_shares) {
     if (shares.empty()) {
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> dis(0, modulus);
-        int first_share = dis(gen);
-        int second_share = dis(gen);
-        unsigned last_share = (value - first_share - second_share) % modulus;
-        shares.emplace_back(first_share);
-        shares.emplace_back(second_share);
-        shares.emplace_back(last_share);
+        shares.reserve(num_shares);
+        for (size_t i = 1; i < num_shares; ++i)
+            shares.emplace_back(dis(gen));
+        int random_share_sum = 0;
+        for (const auto& share: shares)
+            random_share_sum += share;
+        int remainder = (value - random_share_sum) % modulus;
+        shares.emplace_back(remainder);
     }
     return shares;
 }

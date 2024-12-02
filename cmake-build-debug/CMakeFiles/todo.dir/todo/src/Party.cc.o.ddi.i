@@ -26399,7 +26399,7 @@ public:
 
 class SMPCAdditionParty: public Party {
 public:
-    unsigned int partial_sum{0};
+    int partial_sum{0};
     SMPCAdditionParty(std::vector<int>& client_shares, int modulus);
     int computePartialSum();
 };
@@ -26416,8 +26416,7 @@ SMPCAdditionParty::SMPCAdditionParty(std::vector<int> &client_shares, const int 
 
 int SMPCAdditionParty::computePartialSum() {
     partial_sum = 0;
-    for (const auto share: client_shares) {
+    for (const auto share: client_shares)
         partial_sum += share;
-    }
     return partial_sum % modulus;
 }

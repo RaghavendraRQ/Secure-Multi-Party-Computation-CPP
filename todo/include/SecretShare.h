@@ -9,7 +9,7 @@
 #include <vector>
 #include <iostream>
 #include <random>
-
+#include "utils/constants.h"
 
 class AdditiveSecretShare {
 public:
@@ -19,11 +19,11 @@ public:
 
     AdditiveSecretShare(int value, int modulus, std::vector<int> &shares);
 
-    AdditiveSecretShare(int value, int modulus);
+    AdditiveSecretShare(int value, int modulus, int num_share);
 
     ~AdditiveSecretShare();
 
-    std::vector<int> getShares();
+    std::vector<int> getShares(const int& num_shares);
 
     void printShares() const;
 

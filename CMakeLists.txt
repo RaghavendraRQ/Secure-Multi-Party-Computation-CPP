@@ -15,4 +15,6 @@ add_executable(todo main.cpp
         todo/include/Party.h
         todo/src/Party.cc
         todo/include/utils/constants.h
+        todo/include/utils/ShareUtils.h
+        todo/src/utils/ShareUtils.cc
 )
