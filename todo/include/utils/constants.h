@@ -7,13 +7,15 @@
 
 namespace CONSTANTS {
     namespace SMPCConstants {
-        constexpr unsigned MODULUS = 65537;
-        constexpr unsigned SHARE_COUNT = 3;
+        inline constexpr unsigned MODULUS = 65537;
+        inline constexpr unsigned SHARE_COUNT = 3;
+        inline constexpr unsigned THRESHOLD = 3;
     }
 
     namespace TestConstants {
-        constexpr unsigned MODULUS = 1048576;
-        constexpr unsigned SHARE_COUNT = 5;
+        inline constexpr unsigned MODULUS = 1048576;
+        inline constexpr unsigned SHARE_COUNT = 5;
+        inline constexpr unsigned THRESHOLD = 5;
     }
 
     using namespace SMPCConstants;

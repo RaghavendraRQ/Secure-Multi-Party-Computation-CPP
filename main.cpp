@@ -1,33 +1,11 @@
 #include <memory>
 
-#include "todo/include/TaskManager.h"
 #include "todo/include/SecretShare.h"
 #include "todo/include/Party.h"
 #include "todo/include/utils/constants.h"
 #include "todo/include/utils/ShareUtils.h"
+#include "todo/share/overflow.h"
 
-
-void printIt(const std::unique_ptr<TaskManager> &task_manager) {
-    task_manager->printAllTasks();
-}
-
-//int main() {
-//     const auto taskManager = std::make_unique<TaskManager>();
-//     std::string title = "Implement SMPC";
-//     std::string description = "Implement Secure Multi-Party Computation";
-//     std::string title2 = "Implement HE";
-//     std::string description2 = "Implement HE";
-//     std::string title3 = "Implement Blockchain";
-//     std::string description3 = "Implement Blockchain";
-//     taskManager->addTask(title, description);
-//     taskManager->addTask(title2, description2);
-//     taskManager->addTask(title3, description3);
-//     taskManager->printAllTasks();
-//     taskManager->getTaskById(2)->setPriority(HIGH);
-//     printIt(taskManager);
-//
-//     return 0;
-// }
 
 int main() {
     int value_count;
@@ -55,28 +33,37 @@ int main() {
 
     std::cout << "\nPrinting shares of each party....\n" << std::endl;
     RQ_SMPC_Utils::printShareMatrix(shares);
-    matrix share_distributed = RQ_SMPC_Utils::getTranspose(shares);
+    std::vector<std::vector<int>> share_distributed = RQ_SMPC_Utils::getTranspose(shares);
     std::cout << "\nPrinting shares of to be distributed ....\n" << std::endl;
     RQ_SMPC_Utils::printShareMatrix(share_distributed);
 
+    // Distributing the shares to all the parities.
 
     std::cout << "****************** Online Phase *******************" << std::endl;
     std::cout << "Distributing the shares to three parties..." << std::endl;
     std::vector<SMPCAdditionParty*> parties(value_count);
     for (int i = 0; i < value_count; ++i) {
-        parties[i] = new SMPCAdditionParty(share_distributed[i], CONSTANTS::MODULUS);
+        parties[i] = new SMPCAdditionParty(share_distributed[i], CONSTANTS::MODULUS);   // Creating a vector of parties
     }
     std::cout << "\nComputing the partial sum...\n" << std::endl;
 
-    for (const auto& smpc_party: parties)
-        std::cout << smpc_party->computePartialSum() << std::endl;
+    // Computing the partial sum of all parties.
+    // High Computational task.
+    // Creating a timer here to test the efficiency.
+
+    Timer timer1(__FUNCTION__);
+    int total_sum = 0;
+
+    for (const auto& smpc_party: parties) {
+        const int temp = smpc_party->computePartialSum();
+        total_sum += temp;
+        std::cout << temp << std::endl;
+    }
 
     std::cout << "\nTotal Sum....\n" << std::endl;
-    int total_sum = 0;
-    for (const auto& smpc_party: parties)
-        total_sum += smpc_party->computePartialSum();
     std::cout << total_sum % CONSTANTS::MODULUS << std::endl;
-
+    timer1.lapse();
+    //TODO: improve this using smart pointers.
     for (const auto& smpc_party: parties)
         delete smpc_party;
     parties.clear();

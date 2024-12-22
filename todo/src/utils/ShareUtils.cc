@@ -21,7 +21,7 @@ std::vector<std::vector<int>> RQ_SMPC_Utils::getTranspose(const std::vector<std:
     return transposed;
 }
 
-void RQ_SMPC_Utils::printShareMatrix(const matrix &mat) {
+void RQ_SMPC_Utils::printShareMatrix(const std::vector<std::vector<int>> &mat) {
     for (int i = 0; i < mat.size(); ++i) {
         std::cout << i + 1 << ": ";
         for (int j = 0; j < mat[0].size(); ++j)

@@ -68166,13 +68166,15 @@ namespace __detail
 # 8 "/home/raghavendra/Myworkspace/CPP/todo/todo/src/../include/utils/constants.h"
 namespace CONSTANTS {
     namespace SMPCConstants {
-        constexpr unsigned MODULUS = 65537;
-        constexpr unsigned SHARE_COUNT = 3;
+        inline constexpr unsigned MODULUS = 65537;
+        inline constexpr unsigned SHARE_COUNT = 3;
+        inline constexpr unsigned THRESHOLD = 3;
     }
 
     namespace TestConstants {
-        constexpr unsigned MODULUS = 1048576;
-        constexpr unsigned SHARE_COUNT = 5;
+        inline constexpr unsigned MODULUS = 1048576;
+        inline constexpr unsigned SHARE_COUNT = 5;
+        inline constexpr unsigned THRESHOLD = 5;
     }
 
     using namespace SMPCConstants;
@@ -68214,7 +68216,6 @@ AdditiveSecretShare::AdditiveSecretShare(const int value, const int modulus, con
 
 AdditiveSecretShare::~AdditiveSecretShare() {
     shares.clear();
-    std::cout << "AdditiveSecretShare Destructor" << std::endl;
 }
 
 

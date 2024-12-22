@@ -19,7 +19,6 @@ AdditiveSecretShare::AdditiveSecretShare(const int value, const int modulus, con
 
 AdditiveSecretShare::~AdditiveSecretShare() {
     shares.clear();
-    std::cout << "AdditiveSecretShare Destructor" << std::endl;
 }
 
 
@@ -32,7 +31,7 @@ std::vector<int> AdditiveSecretShare::getShares(const int& num_shares) {
         for (size_t i = 1; i < num_shares; ++i)
             shares.emplace_back(dis(gen));
         int random_share_sum = 0;
-        for (const auto& share: shares)
+        for (const int &share: shares)
             random_share_sum += share;
         int remainder = (value - random_share_sum) % modulus;
         shares.emplace_back(remainder);
