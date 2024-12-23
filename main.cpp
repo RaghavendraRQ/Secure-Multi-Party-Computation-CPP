@@ -1,14 +1,15 @@
 #include <memory>
+#include <ranges>
 
 #include "todo/include/SecretShare.h"
 #include "todo/include/Party.h"
 #include "todo/include/utils/constants.h"
 #include "todo/include/utils/ShareUtils.h"
-#include "todo/share/overflow.h"
+#include "todo/overflow/utilities.h"
 
 
 int main() {
-    int value_count;
+    std::uint16_t value_count;
     std::cout << "*************** Offline Phase ***************" << std::endl;
     std::cout << "Modulus value: " << CONSTANTS::MODULUS << std::endl;
     std::cout << "Share Count: " << CONSTANTS::SHARE_COUNT << std::endl;
@@ -16,8 +17,13 @@ int main() {
     std::cin >> value_count;
     std::vector<int> values(value_count);
 
-    for (size_t i = 0; i < value_count; i++)
+    static_assert(std::is_same<decltype(value_count), std::uint16_t>{}, "Value Count should be positive integer");
+
+    // for_each loop IOTA-creates a view from 0, value_count
+    std::ranges::for_each(std::views::iota(0, static_cast<int>(value_count)), [&](const int i) {
         std::cout << "Enter the value of " << (i+1) << "th value: ", std::cin >> values[i];
+    });
+
 
     std::vector<std::shared_ptr<AdditiveSecretShare>> secretShares;
     secretShares.reserve(value_count);

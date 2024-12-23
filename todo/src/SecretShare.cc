@@ -3,6 +3,9 @@
 //
 
 #include "../include/SecretShare.h"
+#include <iostream>
+
+#include "../overflow/utilities.h"
 
 
 AdditiveSecretShare::AdditiveSecretShare(const int value, const int modulus,
@@ -24,12 +27,9 @@ AdditiveSecretShare::~AdditiveSecretShare() {
 
 std::vector<int> AdditiveSecretShare::getShares(const int& num_shares) {
     if (shares.empty()) {
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        std::uniform_int_distribution<> dis(0, modulus);
         shares.reserve(num_shares);
         for (size_t i = 1; i < num_shares; ++i)
-            shares.emplace_back(dis(gen));
+            shares.emplace_back(RandomNumber::generate(0, modulus));
         int random_share_sum = 0;
         for (const int &share: shares)
             random_share_sum += share;

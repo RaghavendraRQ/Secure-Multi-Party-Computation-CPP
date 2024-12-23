@@ -7,6 +7,7 @@
 #include <string>
 #include <chrono>
 #include <iostream>
+#include <random>
 
 
 class Timer {
@@ -21,5 +22,9 @@ private:
     int16_t breakpoint;
 };
 
+namespace RandomNumber {
+    int generate(const int &min, const int &max);
+    static std::mt19937 _initializeRing();
+}
 
 #endif //OVERFLOW_H

@@ -1,7 +1,7 @@
 //
 // Created by raghavendra on 12/21/24.
 //
-#include "overflow.h"
+#include "utilities.h"
 
 
 Timer::Timer(std::string  scope): m_scope(std::move(scope)){
@@ -23,4 +23,14 @@ void Timer::lapse() {
     std::cout << "\033[34m[Timer] " << m_scope << " (lap - " << ++breakpoint << "): "<< ms << " milli seconds\033[0m\n";
 }
 
+int RandomNumber::generate(const int& min,const int& max) {
+    static std::mt19937 ring = _initializeRing();
+    std::uniform_int_distribution<int> dist(min, max);
+    return dist(ring);
+}
+
+static std::mt19937 RandomNumber::_initializeRing() {
+    std::random_device rd;
+    return std::mt19937(rd());
+}
 

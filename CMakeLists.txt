@@ -13,6 +13,8 @@ add_executable(todo main.cpp
         todo/include/utils/constants.h
         todo/include/utils/ShareUtils.h
         todo/src/utils/ShareUtils.cc
-        todo/share/overflow.h
-        todo/share/overflow.cc
+        todo/overflow/utilities.h
+        todo/overflow/utilities.cc
+        todo/include/ShamirSharing.h
+        todo/src/ShamirSharing.cc
 )
