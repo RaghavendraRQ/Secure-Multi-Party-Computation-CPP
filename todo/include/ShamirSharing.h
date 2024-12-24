@@ -1,26 +1,36 @@
 //
-// Created by raghavendra on 12/23/24.
+// Created by raghavendra on 12/24/24.
 //
 
 #ifndef SHAMIRSHARING_H
 #define SHAMIRSHARING_H
 #include <array>
 
-template<int size>
-struct Polynomial {
-    std::array<int, size> _polynomial;
+namespace ShamirSharing {
+    namespace internal {
+        template<unsigned long N>
+        std::array<int, N> generate(int secret, int threshold) {
+            std::array<int, N> ret;
+            for (size_t i = 0; i < N; i++) {
+                ret[i] = secret % threshold;
+                secret /= threshold;
+            }
+            return ret;
+        }
+    }
 
-    explicit Polynomial(std::array<int, size>& _poly);
+    template<unsigned long N>
+    std::array<std::pair<int, int>, N> generateShares(int secret, int num_shares,int threshold) {
+        std::array<std::pair<int, int>, N> ret;
+        for (unsigned long i = 0; i < N; i++) {
+            ret[i].first = secret % threshold;
+            ret[i].second = num_shares % threshold;
+            secret /= threshold;
+        }
+        return ret;
+    }
 
-    static Polynomial generate(int secret, int threshold);
-};
+}
 
-template<int size>
-class ShamirSharing {
-    ShamirSharing
-    () = default;
-
-    static std::array<std::pair<int, int>, size>  generate(int secret, int num_share, int threshold);
-};
 
 #endif //SHAMIRSHARING_H

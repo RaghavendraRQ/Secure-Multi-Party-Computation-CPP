@@ -74524,6 +74524,35 @@ namespace RQ_SMPC_Utils {
 
 }
 # 8 "/home/raghavendra/Myworkspace/CPP/todo/main.cpp" 2
+# 1 "/home/raghavendra/Myworkspace/CPP/todo/todo/include/ShamirSharing.h" 1
+# 9 "/home/raghavendra/Myworkspace/CPP/todo/todo/include/ShamirSharing.h"
+namespace ShamirSharing {
+    namespace internal {
+        template<unsigned long N>
+        std::array<int, N> generate(int secret, int threshold) {
+            std::array<int, N> ret;
+            for (size_t i = 0; i < N; i++) {
+                ret[i] = secret % threshold;
+                secret /= threshold;
+            }
+            return ret;
+        }
+    }
+
+    template<unsigned long N>
+    std::array<std::pair<int, int>, N> generateShares(int secret, int num_shares,int threshold) {
+        std::array<std::pair<int, int>, N> ret;
+        for (unsigned long i = 0; i < N; i++) {
+            ret[i].first = secret % threshold;
+            ret[i].second = num_shares % threshold;
+            secret /= threshold;
+        }
+        return ret;
+    }
+
+}
+# 9 "/home/raghavendra/Myworkspace/CPP/todo/main.cpp" 2
+
 # 1 "/home/raghavendra/Myworkspace/CPP/todo/todo/overflow/utilities.h" 1
 
 
@@ -119168,10 +119197,20 @@ namespace RandomNumber {
     int generate(const int &min, const int &max);
     static std::mt19937 _initializeRing();
 }
-# 9 "/home/raghavendra/Myworkspace/CPP/todo/main.cpp" 2
+# 11 "/home/raghavendra/Myworkspace/CPP/todo/main.cpp" 2
 
+
+void testFunction();
+
+void testShamir();
 
 int main() {
+
+    testShamir();
+    return 0;
+}
+
+void testFunction() {
     std::uint16_t value_count;
     std::cout << "*************** Offline Phase ***************" << std::endl;
     std::cout << "Modulus value: " << CONSTANTS::MODULUS << std::endl;
@@ -119237,5 +119276,13 @@ int main() {
         delete smpc_party;
     parties.clear();
 
-    return 0;
+}
+
+void testShamir() {
+    int secret, threshold;
+    std::cout << "Enter Secret Value: ", std::cin >> secret;
+    std::cout << "Enter Threshold Value: ", std::cin >> threshold;
+    std::array arr = {1, 2, 3, 4};
+    int i = 2;
+    auto poly = ShamirSharing::internal::generate<5>(secret, threshold);
 }

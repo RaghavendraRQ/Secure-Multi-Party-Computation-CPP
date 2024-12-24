@@ -5,10 +5,22 @@
 #include "todo/include/Party.h"
 #include "todo/include/utils/constants.h"
 #include "todo/include/utils/ShareUtils.h"
+#include "todo/include/ShamirSharing.h"
+
 #include "todo/overflow/utilities.h"
 
 
+void testFunction();
+
+void testShamir();
+
 int main() {
+    // testFunction();
+    testShamir();
+    return 0;
+}
+
+void testFunction() {
     std::uint16_t value_count;
     std::cout << "*************** Offline Phase ***************" << std::endl;
     std::cout << "Modulus value: " << CONSTANTS::MODULUS << std::endl;
@@ -74,5 +86,13 @@ int main() {
         delete smpc_party;
     parties.clear();
 
-    return 0;
+}
+
+void testShamir() {
+    int secret, threshold;
+    std::cout << "Enter Secret Value: ", std::cin >> secret;
+    std::cout << "Enter Threshold Value: ", std::cin >> threshold;
+    std::array arr = {1, 2, 3, 4};
+    int i = 2;
+    auto poly = ShamirSharing::internal::generate<5>(secret, threshold);
 }
