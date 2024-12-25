@@ -64698,7 +64698,7 @@ public:
 
 namespace CONSTANTS {
     namespace SMPCConstants {
-        inline constexpr unsigned MODULUS = 65537;
+        inline constexpr int MODULUS = 65537;
         inline constexpr unsigned SHARE_COUNT = 3;
         inline constexpr unsigned THRESHOLD = 3;
     }
@@ -74528,27 +74528,15 @@ namespace RQ_SMPC_Utils {
 # 9 "/home/raghavendra/Myworkspace/CPP/todo/todo/include/ShamirSharing.h"
 namespace ShamirSharing {
     namespace internal {
-        template<unsigned long N>
-        std::array<int, N> generate(int secret, int threshold) {
-            std::array<int, N> ret;
-            for (size_t i = 0; i < N; i++) {
-                ret[i] = secret % threshold;
-                secret /= threshold;
-            }
-            return ret;
-        }
+        std::vector<int> generate(int secret, int threshold);
+        int evaluate(const std::vector<int>& secrets, int x);
+        int modularInverse(int a);
     }
 
-    template<unsigned long N>
-    std::array<std::pair<int, int>, N> generateShares(int secret, int num_shares,int threshold) {
-        std::array<std::pair<int, int>, N> ret;
-        for (unsigned long i = 0; i < N; i++) {
-            ret[i].first = secret % threshold;
-            ret[i].second = num_shares % threshold;
-            secret /= threshold;
-        }
-        return ret;
-    }
+    std::vector<std::pair<int, int>> generateShares(int secret, int num_shares,int threshold);
+
+    int reconstructSecret(const std::vector<std::pair<int, int>>& shares);
+
 
 }
 # 9 "/home/raghavendra/Myworkspace/CPP/todo/main.cpp" 2
@@ -119282,7 +119270,12 @@ void testShamir() {
     int secret, threshold;
     std::cout << "Enter Secret Value: ", std::cin >> secret;
     std::cout << "Enter Threshold Value: ", std::cin >> threshold;
-    std::array arr = {1, 2, 3, 4};
-    int i = 2;
-    auto poly = ShamirSharing::internal::generate<5>(secret, threshold);
+    auto poly = ShamirSharing::generateShares(secret, 5, threshold);
+    std::ranges::for_each(poly, [&](const std::pair<int, int>& i) { std::cout << i.first << " " << i.second << "\n"; });
+    const int secret_ = ShamirSharing::reconstructSecret(poly);
+    auto first = poly | std::ranges::views::transform([](const std::pair<int, int>& p) {
+        return p.second;
+    });
+    const int secret_1 = ShamirSharing::internal::evaluate(std::vector(first.begin(), first.end()), 0);
+    std::cout << "Secret Value: " << secret_1 << std::endl;
 }

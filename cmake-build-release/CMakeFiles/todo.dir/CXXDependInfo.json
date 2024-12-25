@@ -1,0 +1,21 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "GNU",
+	"compiler-id" : "GNU",
+	"compiler-simulate-id" : "",
+	"config" : "Release",
+	"cxx-modules" : {},
+	"dir-cur-bld" : "/home/raghavendra/Myworkspace/CPP/todo/cmake-build-release",
+	"dir-cur-src" : "/home/raghavendra/Myworkspace/CPP/todo",
+	"dir-top-bld" : "/home/raghavendra/Myworkspace/CPP/todo/cmake-build-release",
+	"dir-top-src" : "/home/raghavendra/Myworkspace/CPP/todo",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : 
+	[
+		"/home/raghavendra/Myworkspace/CPP/todo/include"
+	],
+	"language" : "CXX",
+	"linked-target-dirs" : [],
+	"module-dir" : "/home/raghavendra/Myworkspace/CPP/todo/cmake-build-release/CMakeFiles/todo.dir"
+}

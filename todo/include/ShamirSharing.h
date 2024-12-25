@@ -4,31 +4,19 @@
 
 #ifndef SHAMIRSHARING_H
 #define SHAMIRSHARING_H
-#include <array>
+#include <vector>
 
 namespace ShamirSharing {
     namespace internal {
-        template<unsigned long N>
-        std::array<int, N> generate(int secret, int threshold) {
-            std::array<int, N> ret;
-            for (size_t i = 0; i < N; i++) {
-                ret[i] = secret % threshold;
-                secret /= threshold;
-            }
-            return ret;
-        }
+        std::vector<int> generate(int secret, int threshold);
+        int evaluate(const std::vector<int>& secrets, int x);
+        int modularInverse(int a);
     }
 
-    template<unsigned long N>
-    std::array<std::pair<int, int>, N> generateShares(int secret, int num_shares,int threshold) {
-        std::array<std::pair<int, int>, N> ret;
-        for (unsigned long i = 0; i < N; i++) {
-            ret[i].first = secret % threshold;
-            ret[i].second = num_shares % threshold;
-            secret /= threshold;
-        }
-        return ret;
-    }
+    std::vector<std::pair<int, int>> generateShares(int secret, int num_shares,int threshold);
+
+    int reconstructSecret(const std::vector<std::pair<int, int>>& shares);
+
 
 }
 

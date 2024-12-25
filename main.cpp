@@ -92,7 +92,8 @@ void testShamir() {
     int secret, threshold;
     std::cout << "Enter Secret Value: ", std::cin >> secret;
     std::cout << "Enter Threshold Value: ", std::cin >> threshold;
-    std::array arr = {1, 2, 3, 4};
-    int i = 2;
-    auto poly = ShamirSharing::internal::generate<5>(secret, threshold);
+    auto poly = ShamirSharing::generateShares(secret, 5, threshold);
+    std::ranges::for_each(poly, [&](const std::pair<int, int>& i) { std::cout << i.first << " " << i.second << "\n"; });
+    const int secret_ = ShamirSharing::reconstructSecret(poly);
+    std::cout << "Secret Value: " << secret_ << std::endl;
 }
