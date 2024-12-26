@@ -74529,7 +74529,7 @@ namespace RQ_SMPC_Utils {
 namespace ShamirSharing {
     namespace internal {
         std::vector<int> generate(int secret, int threshold);
-        int evaluate(const std::vector<int>& secrets, int x);
+        int evaluate(const std::vector<int>& polynomial, int x);
         int modularInverse(int a);
     }
 
@@ -119273,9 +119273,5 @@ void testShamir() {
     auto poly = ShamirSharing::generateShares(secret, 5, threshold);
     std::ranges::for_each(poly, [&](const std::pair<int, int>& i) { std::cout << i.first << " " << i.second << "\n"; });
     const int secret_ = ShamirSharing::reconstructSecret(poly);
-    auto first = poly | std::ranges::views::transform([](const std::pair<int, int>& p) {
-        return p.second;
-    });
-    const int secret_1 = ShamirSharing::internal::evaluate(std::vector(first.begin(), first.end()), 0);
-    std::cout << "Secret Value: " << secret_1 << std::endl;
+    std::cout << "Secret Value: " << secret_ << std::endl;
 }

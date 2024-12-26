@@ -9,7 +9,7 @@
 namespace ShamirSharing {
     namespace internal {
         std::vector<int> generate(int secret, int threshold);
-        int evaluate(const std::vector<int>& secrets, int x);
+        int evaluate(const std::vector<int>& polynomial, int x);
         int modularInverse(int a);
     }
 

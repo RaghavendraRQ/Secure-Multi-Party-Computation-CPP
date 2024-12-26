@@ -13,70 +13,93 @@ namespace ShamirSharing {
             std::vector<int> result;
             result.reserve(threshold);
             result.push_back(secret);
-            for (int i: std::views::iota(1, threshold))
+            for (int _: std::views::iota(1, threshold))
                 result.push_back(RandomNumber::generate(0, CONSTANTS::MODULUS));
             return result;
         }
 
-        int evaluate(const std::vector<int> &secrets,const int x) {
+        int evaluate(const std::vector<int> &polynomial,const int x) {
             int result = 0;
-            for (int i = 0; i < secrets.size(); i++)
-                result += static_cast<int>(pow(x, i)) * secrets[i];
+            for (const int i: std::views::iota(0, static_cast<int>(polynomial.size())))
+                result += static_cast<int>(pow(x, i)) * polynomial[i];
             return result % static_cast<int>(CONSTANTS::MODULUS);
         }
-        int modularInverse(const int a) {
-            int result = 1, base = a, exp = CONSTANTS::MODULUS - 2;
-            while (exp > 0) {
-                if (exp % 2 == 1) result = (result * base) % CONSTANTS::MODULUS;
-                base = (base * base) % CONSTANTS::MODULUS;
-                exp /= 2;
+        int modularInverse(int a) {
+            int p = CONSTANTS::MODULUS;
+            a = a % p;
+            if (a < 0) a += p; // Ensure a is positive
+
+            int t = 0, new_t = 1; // Coefficients for 'p' and 'a'
+            int r = p, new_r = a; // Remainders for 'p' and 'a'
+
+            while (new_r != 0) {
+                int quotient = r / new_r;
+
+                // Update t and new_t
+                int temp_t = t;
+                t = new_t;
+                new_t = temp_t - quotient * new_t;
+
+                // Update r and new_r
+                int temp_r = r;
+                r = new_r;
+                new_r = temp_r - quotient * new_r;
             }
-            return result;
+
+            if (r != 1) {
+                throw std::invalid_argument("Number is not invertible under the modulus");
+            }
+
+            return t < 0 ? t + p : t; // Ensure the result is positive
         }
+
 
     }
     std::vector<std::pair<int, int>> generateShares(const int secret, const int num_shares,const int threshold) {
         const std::vector<int> polynomial = internal::generate(secret, threshold);
         std::vector<std::pair<int, int>> result;
         result.reserve(num_shares);
-        for (const int i: std::views::iota(1, num_shares))
+        for (const int i: std::views::iota(1, num_shares + 1))
             result.emplace_back(i, internal::evaluate(polynomial, i));
         return result;
     }
 
-    int reconstructSecret(const std::vector<std::pair<int, int>> &shares) {
+    int reconstructSecret(const std::vector<std::pair<int, int>>& shares) {
         int total = 0;
-
-        for (size_t i = 0; i < shares.size(); ++i) {
+        const size_t n = shares.size();
+        const int MODULUS = CONSTANTS::MODULUS;
+        for (size_t i = 0; i < n; ++i) {
             int lagrange_coefficient = 1;
             const auto& [xi, yi] = shares[i];
 
-            for (size_t j = 0; j < shares.size(); ++j) {
+            for (size_t j = 0; j < n; ++j) {
                 if (i == j) continue;
-
                 const auto& [xj, _] = shares[j];
 
-                // Compute (xi - xj) mod CONSTANTS::MODULUS
-                const int numerator = (CONSTANTS::MODULUS - xj) % CONSTANTS::MODULUS; // -xj mod MODULUS
-                const int denominator = (xi - xj + CONSTANTS::MODULUS) % CONSTANTS::MODULUS; // xi - xj mod MODULUS
-                const int denominator_inverse = internal::modularInverse(denominator); // modular inverse of denominator
-
-                // Update lagrange_coefficient
-                lagrange_coefficient = (lagrange_coefficient * numerator % CONSTANTS::MODULUS) * denominator_inverse % CONSTANTS::MODULUS;
-                std::cout << lagrange_coefficient << std::endl;
+                // Calculate Lagrange coefficient
+                lagrange_coefficient *= -xj * internal::modularInverse(xi - xj);
+                lagrange_coefficient %= MODULUS;
+                // Ensure non-negative lagrange_coefficient
+                if (lagrange_coefficient < 0) {
+                    lagrange_coefficient += MODULUS;
+                }
             }
 
-            // Update total
-            total = (total + yi * lagrange_coefficient) % CONSTANTS::MODULUS;
-        }
+            // Add to the total
+            std::cout << "Lagrange Coefficient: " << lagrange_coefficient << std::endl;
+            total += yi * lagrange_coefficient;
+            total %= MODULUS;
+            std::cout << "Total: " << total << std::endl;
 
-        // Ensure total is non-negative
-        if (total < 0) {
-            total += CONSTANTS::MODULUS;
+            // Ensure non-negative total
+            if (total < 0) {
+                total += MODULUS;
+            }
         }
 
         return total;
     }
+
 
 
 }
